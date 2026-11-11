@@ -47,11 +47,14 @@ public class BookingService {
     }
 
     @Transactional
-    public void cancel(Long id) {
-        if (!bookingRepository.existsById(id)) {
+    public void cancel(Long id, String email) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
+        // Wrong email gets the same 404, so ids cannot be probed
+        if (!booking.getCustomerEmail().equalsIgnoreCase(email)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found");
         }
-        bookingRepository.deleteById(id);
+        bookingRepository.delete(booking);
     }
 
     @Transactional(readOnly = true)

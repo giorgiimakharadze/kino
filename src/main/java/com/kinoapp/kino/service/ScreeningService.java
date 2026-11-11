@@ -39,6 +39,10 @@ public class ScreeningService {
 
     @Transactional
     public Screening create(ScreeningForm form) {
+        // shortcut: only the exact same start time is caught, not overlapping runtimes; upgrade if halls need real scheduling
+        if (screeningRepository.existsByHallAndStartTime(form.getHall(), form.getStartTime())) {
+            throw new IllegalStateException("That hall is already used at this time");
+        }
         Screening s = new Screening();
         s.setMovie(movieService.get(form.getMovieId()));
         s.setStartTime(form.getStartTime());

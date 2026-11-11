@@ -15,11 +15,14 @@ import java.util.Optional;
 @Repository
 public interface ScreeningRepository extends JpaRepository<Screening, Long> {
 
-    // Custom query: future screenings of one movie, soonest first
+    // future screenings of one movie, soonest first
     @Query("select s from Screening s where s.movie.id = :movieId and s.startTime > :now order by s.startTime")
     List<Screening> findUpcomingByMovie(@Param("movieId") Long movieId, @Param("now") LocalDateTime now);
 
-    // Same as findById but locks the row until the transaction ends (prevents overbooking)
+    // is this hall already booked for that exact start time?
+    boolean existsByHallAndStartTime(String hall, LocalDateTime startTime);
+
+    // Same as findById but locks the row until the transaction ends
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select s from Screening s where s.id = :id")
     Optional<Screening> findByIdForUpdate(@Param("id") Long id);
