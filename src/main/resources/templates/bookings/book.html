@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Book tickets')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="container">
+    <h1>Book tickets</h1>
+    <p>
+        <strong th:text="${screening.movie.title}">Title</strong><br>
+        <span th:text="${#temporals.format(screening.startTime, 'dd MMM yyyy HH:mm')}">date</span>
+        &middot; <span th:text="${screening.hall}">Hall 1</span>
+        &middot; <span th:text="${screening.price} + ' per seat'">10.00 per seat</span><br>
+        <span th:text="${freeSeats} + ' of ' + ${screening.totalSeats} + ' seats left'">5 of 20 seats left</span>
+    </p>
+
+    <form method="post" th:action="@{/screenings/{id}/book(id=${screening.id})}" th:object="${bookingForm}">
+        <p class="error" th:each="e : ${#fields.globalErrors()}" th:text="${e}"></p>
+
+        <input type="hidden" th:field="*{screeningId}">
+
+        <div class="field">
+            <label for="customerName">Your name</label>
+            <input id="customerName" type="text" th:field="*{customerName}">
+            <span class="field-error" th:if="${#fields.hasErrors('customerName')}" th:errors="*{customerName}"></span>
+        </div>
+
+        <div class="field">
+            <label for="customerEmail">Email</label>
+            <input id="customerEmail" type="email" th:field="*{customerEmail}">
+            <span class="field-error" th:if="${#fields.hasErrors('customerEmail')}" th:errors="*{customerEmail}"></span>
+        </div>
+
+        <div class="field">
+            <label for="seats">Seats</label>
+            <input id="seats" type="number" min="1" th:field="*{seats}">
+            <span class="field-error" th:if="${#fields.hasErrors('seats')}" th:errors="*{seats}"></span>
+        </div>
+
+        <button type="submit">Book</button>
+        <a th:href="@{/movies/{id}(id=${screening.movie.id})}">Cancel</a>
+    </form>
+</main>
+</body>
+</html>

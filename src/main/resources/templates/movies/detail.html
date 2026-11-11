@@ -26,6 +26,7 @@
     </div>
 
     <h2>Upcoming screenings</h2>
+    <p><a class="btn" th:href="@{/movies/{id}/screenings/new(id=${movie.id})}">Add screening</a></p>
     <p th:if="${screenings.empty}">No upcoming screenings.</p>
     <table th:unless="${screenings.empty}">
         <tr><th>When</th><th>Hall</th><th>Price</th><th></th></tr>
@@ -33,7 +34,13 @@
             <td th:text="${#temporals.format(s.startTime, 'dd MMM yyyy HH:mm')}">date</td>
             <td th:text="${s.hall}">Hall 1</td>
             <td th:text="${s.price}">10.00</td>
-            <td><a class="btn" th:href="@{/screenings/{id}/book(id=${s.id})}">Book</a></td>
+            <td>
+                <a class="btn" th:href="@{/screenings/{id}/book(id=${s.id})}">Book</a>
+                <form style="display: inline" method="post" th:action="@{/screenings/{id}(id=${s.id}, _method='delete')}"
+                      onsubmit="return confirm('Delete this screening?')">
+                    <button type="submit" class="danger">Delete</button>
+                </form>
+            </td>
         </tr>
     </table>
 

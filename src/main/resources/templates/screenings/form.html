@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Add screening')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="container">
+    <h1>Add screening</h1>
+    <p>Movie: <strong th:text="${movie.title}">Title</strong></p>
+
+    <form method="post" th:action="@{/screenings}" th:object="${screeningForm}">
+        <p class="error" th:each="e : ${#fields.globalErrors()}" th:text="${e}"></p>
+
+        <input type="hidden" th:field="*{movieId}">
+
+        <div class="field">
+            <label for="startTime">Start time</label>
+            <input id="startTime" type="datetime-local" th:field="*{startTime}">
+            <span class="field-error" th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></span>
+        </div>
+
+        <div class="field">
+            <label for="hall">Hall</label>
+            <input id="hall" type="text" th:field="*{hall}">
+            <span class="field-error" th:if="${#fields.hasErrors('hall')}" th:errors="*{hall}"></span>
+        </div>
+
+        <div class="field">
+            <label for="totalSeats">Total seats</label>
+            <input id="totalSeats" type="number" th:field="*{totalSeats}">
+            <span class="field-error" th:if="${#fields.hasErrors('totalSeats')}" th:errors="*{totalSeats}"></span>
+        </div>
+
+        <div class="field">
+            <label for="price">Price per seat</label>
+            <input id="price" type="number" step="0.01" th:field="*{price}">
+            <span class="field-error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
+        </div>
+
+        <button type="submit">Save</button>
+        <a th:href="@{/movies/{id}(id=${movie.id})}">Cancel</a>
+    </form>
+</main>
+</body>
+</html>
