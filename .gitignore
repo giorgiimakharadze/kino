@@ -33,3 +33,10 @@ build/
 .vscode/
 
 .mcp.json
+
+
+### Uploaded posters ###
+uploads/
+
+### Claude Code ###
+.claude/
