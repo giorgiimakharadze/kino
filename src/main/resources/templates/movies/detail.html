@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${movie.title})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="container">
+    <p class="notice" th:if="${message}" th:text="${message}"></p>
+
+    <h1 th:text="${movie.title}">Title</h1>
+    <img th:if="${movie.posterPath}" th:src="@{/posters/{p}(p=${movie.posterPath})}"
+         th:alt="${movie.title}" style="max-width: 240px; border-radius: 8px;">
+    <p>
+        <span th:text="${movie.durationMinutes} + ' min'">120 min</span> &middot;
+        <span th:text="${movie.releaseDate}">2024-01-01</span> &middot;
+        <span th:each="g, st : ${movie.genres}" th:text="${g.name} + (${st.last} ? '' : ', ')">Genre</span>
+    </p>
+    <p th:text="${movie.description}">Description</p>
+
+    <div>
+        <a class="btn" th:href="@{/movies/{id}/edit(id=${movie.id})}">Edit</a>
+        <!-- HTML forms only do POST, so _method=delete is turned into DELETE by Spring -->
+        <form style="display: inline" method="post" th:action="@{/movies/{id}(id=${movie.id}, _method='delete')}"
+              onsubmit="return confirm('Delete this movie?')">
+            <button type="submit" class="danger">Delete</button>
+        </form>
+    </div>
+
+    <h2>Upcoming screenings</h2>
+    <p th:if="${screenings.empty}">No upcoming screenings.</p>
+    <table th:unless="${screenings.empty}">
+        <tr><th>When</th><th>Hall</th><th>Price</th><th></th></tr>
+        <tr th:each="s : ${screenings}">
+            <td th:text="${#temporals.format(s.startTime, 'dd MMM yyyy HH:mm')}">date</td>
+            <td th:text="${s.hall}">Hall 1</td>
+            <td th:text="${s.price}">10.00</td>
+            <td><a class="btn" th:href="@{/screenings/{id}/book(id=${s.id})}">Book</a></td>
+        </tr>
+    </table>
+
+    <p><a th:href="@{/movies}">&laquo; Back to movies</a></p>
+</main>
+</body>
+</html>

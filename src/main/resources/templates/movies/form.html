@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Movie form')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="container">
+    <h1 th:text="${movieId == null} ? 'Add movie' : 'Edit movie'">Add movie</h1>
+
+    <!-- multipart/form-data is required for the poster upload; edit posts as PUT via _method -->
+    <form method="post" enctype="multipart/form-data" th:object="${movieForm}"
+          th:action="${movieId == null} ? @{/movies} : @{/movies/{id}(id=${movieId}, _method='put')}">
+
+        <div class="field">
+            <label for="title">Title</label>
+            <input id="title" type="text" th:field="*{title}">
+            <span class="field-error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+        </div>
+
+        <div class="field">
+            <label for="description">Description</label>
+            <textarea id="description" rows="4" th:field="*{description}"></textarea>
+            <span class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
+        </div>
+
+        <div class="field">
+            <label for="durationMinutes">Duration (minutes)</label>
+            <input id="durationMinutes" type="number" th:field="*{durationMinutes}">
+            <span class="field-error" th:if="${#fields.hasErrors('durationMinutes')}" th:errors="*{durationMinutes}"></span>
+        </div>
+
+        <div class="field">
+            <label for="releaseDate">Release date</label>
+            <input id="releaseDate" type="date" th:field="*{releaseDate}">
+            <span class="field-error" th:if="${#fields.hasErrors('releaseDate')}" th:errors="*{releaseDate}"></span>
+        </div>
+
+        <div class="field">
+            <label>Genres</label>
+            <p th:if="${genres.empty}"><small>No genres yet.</small></p>
+            <label th:each="g : ${genres}" style="font-weight: normal">
+                <input type="checkbox" th:field="*{genreIds}" th:value="${g.id}">
+                <span th:text="${g.name}">Genre</span>
+            </label>
+        </div>
+
+        <div class="field">
+            <label for="poster">Poster (jpg, png or webp, max 5 MB)</label>
+            <img th:if="${posterPath}" th:src="@{/posters/{p}(p=${posterPath})}" alt="Current poster"
+                 style="max-width: 120px; display: block; margin-bottom: 8px;">
+            <input id="poster" type="file" name="poster" accept="image/*">
+        </div>
+
+        <button type="submit">Save</button>
+        <a th:href="@{/movies}">Cancel</a>
+    </form>
+</main>
+</body>
+</html>

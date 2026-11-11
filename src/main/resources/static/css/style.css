@@ -61,6 +61,7 @@ input[type=checkbox], input[type=file] { width: auto; }
 .center { text-align: center; }
 
 .error { color: #ff7b72; }
+.notice { color: #7ee787; }
 .field-error { color: #ff7b72; font-size: 0.85rem; }
 
 /* Pagination */
