@@ -42,6 +42,7 @@ input, select, textarea {
     background: #1e1e28;
     color: inherit;
 }
+input[type=checkbox], input[type=file] { width: auto; }
 .inline-form { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
 .inline-form input, .inline-form select { width: auto; }
 

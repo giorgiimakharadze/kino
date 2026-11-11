@@ -39,6 +39,8 @@ public class FileStorageService {
         // Random name for the file
         String name = UUID.randomUUID() + "." + ext.toLowerCase();
         try {
+            // Recreate the folder in case it was deleted while the app runs
+            Files.createDirectories(uploadDir);
             Files.copy(file.getInputStream(), uploadDir.resolve(name), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new UncheckedIOException("Could not save poster", e);
