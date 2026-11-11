@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Error')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="container center">
+    <h1>Something went wrong <span th:if="${status}" th:text="'(' + ${status} + ')'"></span></h1>
+    <p class="error" th:text="${message} ?: ${error} ?: 'Unexpected error'">Message</p>
+    <a class="btn" th:href="@{/movies}">Back to movies</a>
+</main>
+</body>
+</html>

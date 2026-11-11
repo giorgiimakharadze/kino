@@ -1,0 +1,70 @@
+/* Basic dark cinema look shared by all pages */
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: system-ui, Arial, sans-serif;
+    background: #14141a;
+    color: #e8e8ee;
+}
+
+a { color: #ffb347; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    background: #0c0c10;
+    border-bottom: 1px solid #2a2a35;
+}
+.site-header .logo { font-size: 1.5rem; font-weight: bold; }
+.site-header nav a { margin-left: 16px; }
+
+.container { max-width: 1000px; margin: 24px auto; padding: 0 16px; }
+
+/* Movie cards grid */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.card { background: #1e1e28; border-radius: 8px; overflow: hidden; }
+.card img, .card .no-poster { width: 100%; height: 280px; object-fit: cover; display: block; }
+.no-poster { background: #2a2a35; display: flex; align-items: center; justify-content: center; color: #777; }
+.card .body { padding: 10px 12px; }
+
+/* Forms */
+form .field { margin-bottom: 12px; }
+label { display: block; margin-bottom: 4px; font-weight: 600; }
+input, select, textarea {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #3a3a48;
+    background: #1e1e28;
+    color: inherit;
+}
+.inline-form { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.inline-form input, .inline-form select { width: auto; }
+
+.btn, button {
+    display: inline-block;
+    padding: 8px 16px;
+    border: 0;
+    border-radius: 6px;
+    background: #ffb347;
+    color: #14141a;
+    font-weight: 600;
+    cursor: pointer;
+}
+.btn.danger, button.danger { background: #e5534b; color: #fff; }
+
+.center { text-align: center; }
+
+.error { color: #ff7b72; }
+.field-error { color: #ff7b72; font-size: 0.85rem; }
+
+/* Pagination */
+.pagination { display: flex; gap: 8px; margin-top: 16px; }
+.pagination .current { font-weight: bold; }
+
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 8px; border-bottom: 1px solid #2a2a35; }

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Shared <head> -->
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' | Kino'">Kino</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<!-- Shared top bar -->
+<header th:fragment="header" class="site-header">
+    <a th:href="@{/movies}" class="logo">Kino</a>
+    <nav>
+        <a th:href="@{/movies}">Movies</a>
+        <a th:href="@{/bookings}">My bookings</a>
+        <a th:href="@{/movies/new}">Add movie</a>
+    </nav>
+</header>
+</body>
+</html>
