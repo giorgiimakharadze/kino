@@ -7,7 +7,7 @@
     <p class="notice" th:if="${message}" th:text="${message}"></p>
 
     <h1 th:text="${movie.title}">Title</h1>
-    <img th:if="${movie.posterPath}" th:src="@{/posters/{p}(p=${movie.posterPath})}"
+    <img th:if="${movie.posterPath}" th:src="${#strings.startsWith(movie.posterPath, 'http')} ? ${movie.posterPath} : @{/posters/{p}(p=${movie.posterPath})}"
          th:alt="${movie.title}" style="max-width: 240px; border-radius: 8px;">
     <p>
         <span th:text="${movie.durationMinutes} + ' min'">120 min</span> &middot;
@@ -29,13 +29,15 @@
     <p><a class="btn" th:href="@{/movies/{id}/screenings/new(id=${movie.id})}">Add screening</a></p>
     <p th:if="${screenings.empty}">No upcoming screenings.</p>
     <table th:unless="${screenings.empty}">
-        <tr><th>When</th><th>Hall</th><th>Price</th><th></th></tr>
+        <tr><th>When</th><th>Hall</th><th>Price</th><th>Seats left</th><th></th></tr>
         <tr th:each="s : ${screenings}">
             <td th:text="${#temporals.format(s.startTime, 'dd MMM yyyy HH:mm')}">date</td>
             <td th:text="${s.hall}">Hall 1</td>
             <td th:text="${s.price}">10.00</td>
+            <td th:text="${freeSeats[s.id]} + ' / ' + ${s.totalSeats}">20 / 50</td>
             <td>
-                <a class="btn" th:href="@{/screenings/{id}/book(id=${s.id})}">Book</a>
+                <a class="btn" th:if="${freeSeats[s.id] > 0}" th:href="@{/screenings/{id}/book(id=${s.id})}">Book</a>
+                <span class="error" th:unless="${freeSeats[s.id] > 0}">Sold out</span>
                 <form style="display: inline" method="post" th:action="@{/screenings/{id}(id=${s.id}, _method='delete')}"
                       onsubmit="return confirm('Delete this screening?')">
                     <button type="submit" class="danger">Delete</button>

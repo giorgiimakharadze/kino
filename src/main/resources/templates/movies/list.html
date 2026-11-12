@@ -31,7 +31,7 @@
 
     <div class="grid">
         <a class="card" th:each="m : ${movies.content}" th:href="@{/movies/{id}(id=${m.id})}">
-            <img th:if="${m.posterPath}" th:src="@{/posters/{p}(p=${m.posterPath})}" th:alt="${m.title}">
+            <img th:if="${m.posterPath}" th:src="${#strings.startsWith(m.posterPath, 'http')} ? ${m.posterPath} : @{/posters/{p}(p=${m.posterPath})}" th:alt="${m.title}">
             <div th:unless="${m.posterPath}" class="no-poster">No poster</div>
             <div class="body">
                 <strong th:text="${m.title}">Title</strong><br>

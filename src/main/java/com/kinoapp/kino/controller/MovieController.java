@@ -3,6 +3,8 @@ package com.kinoapp.kino.controller;
 import com.kinoapp.kino.dto.MovieForm;
 import com.kinoapp.kino.entity.Genre;
 import com.kinoapp.kino.entity.Movie;
+import com.kinoapp.kino.entity.Screening;
+import com.kinoapp.kino.service.BookingService;
 import com.kinoapp.kino.service.MovieService;
 import com.kinoapp.kino.service.ScreeningService;
 import jakarta.validation.Valid;
@@ -22,6 +24,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Controller
@@ -33,10 +38,13 @@ public class MovieController {
 
     private final MovieService movieService;
     private final ScreeningService screeningService;
+    private final BookingService bookingService;
 
-    public MovieController(MovieService movieService, ScreeningService screeningService) {
+    public MovieController(MovieService movieService, ScreeningService screeningService,
+                           BookingService bookingService) {
         this.movieService = movieService;
         this.screeningService = screeningService;
+        this.bookingService = bookingService;
     }
 
     @GetMapping("/")
@@ -70,7 +78,12 @@ public class MovieController {
     @GetMapping("/movies/{id}")
     public String details(@PathVariable Long id, Model model) {
         model.addAttribute("movie", movieService.get(id));
-        model.addAttribute("screenings", screeningService.upcomingForMovie(id));
+        List<Screening> screenings = screeningService.upcomingForMovie(id);
+        model.addAttribute("screenings", screenings);
+        // Seats still free per screening id, for the screenings table
+        Map<Long, Integer> freeSeats = new HashMap<>();
+        screenings.forEach(s -> freeSeats.put(s.getId(), bookingService.freeSeats(s)));
+        model.addAttribute("freeSeats", freeSeats);
         return "movies/detail";
     }
 

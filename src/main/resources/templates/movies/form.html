@@ -45,7 +45,7 @@
 
         <div class="field">
             <label for="poster">Poster (jpg, png or webp, max 5 MB)</label>
-            <img th:if="${posterPath}" th:src="@{/posters/{p}(p=${posterPath})}" alt="Current poster"
+            <img th:if="${posterPath}" th:src="${#strings.startsWith(posterPath, 'http')} ? ${posterPath} : @{/posters/{p}(p=${posterPath})}" alt="Current poster"
                  style="max-width: 120px; display: block; margin-bottom: 8px;">
             <input id="poster" type="file" name="poster" accept="image/*">
         </div>

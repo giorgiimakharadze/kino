@@ -49,7 +49,8 @@ public class FileStorageService {
     }
 
     public void delete(String name) {
-        if (name == null) return;
+        // Seeded movies keep a poster web address, not a file on disk
+        if (name == null || name.startsWith("http")) return;
         try {
             Files.deleteIfExists(uploadDir.resolve(name));
         } catch (IOException e) {
