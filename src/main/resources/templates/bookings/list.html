@@ -29,10 +29,10 @@
                     </thead>
                     <tbody>
                     <tr th:each="b : ${bookings}">
-                        <td th:text="${b.screening.movie.title}">Title</td>
-                        <td class="num" th:text="${#temporals.format(b.screening.startTime, 'dd MMM yyyy HH:mm')}">date</td>
-                        <td th:text="${b.screening.hall}">Hall 1</td>
-                        <td class="num" th:text="${b.seats}">2</td>
+                        <td data-label="Movie" th:text="${b.screening.movie.title}">Title</td>
+                        <td class="num" data-label="When" th:text="${#temporals.format(b.screening.startTime, 'dd MMM yyyy HH:mm')}">date</td>
+                        <td data-label="Hall" th:text="${b.screening.hall}">Hall 1</td>
+                        <td class="num" data-label="Seats" th:text="${b.seats}">2</td>
                         <td class="actions">
                             <!-- Cancelling needs the booking's email, sent as a hidden field -->
                             <form class="inline" method="post" th:action="@{/bookings/{id}(id=${b.id}, _method='delete')}"

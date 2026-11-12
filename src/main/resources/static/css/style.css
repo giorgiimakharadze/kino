@@ -68,6 +68,8 @@ p { margin: 0; }
 .measure { max-width: 62ch; }
 .muted { color: var(--muted); }
 .center { text-align: center; }
+/* The lead is capped at 62ch, so centre the box itself too */
+.center .lead { margin-left: auto; margin-right: auto; }
 
 a { color: inherit; }
 
@@ -208,6 +210,17 @@ input[type=file] { height: auto; padding: var(--s-3) var(--s-4); }
 .table td { padding: var(--s-4) var(--s-3); border-bottom: 1px solid var(--line); vertical-align: middle; }
 .table td.num { font-family: var(--mono); font-size: 15px; white-space: nowrap; }
 .table .actions { text-align: right; white-space: nowrap; }
+
+/* Phones: each table row becomes a stacked card so the action button is always visible */
+@media (max-width: 639px) {
+    .table thead { display: none; }
+    .table, .table tbody, .table tr { display: block; }
+    .table tr { padding: var(--s-4) 0; border-bottom: 1px solid var(--line); }
+    .table td { display: flex; justify-content: space-between; align-items: center; gap: var(--s-4); padding: var(--s-1) 0; border: 0; }
+    .table td::before { content: attr(data-label); color: var(--muted); font-size: 14px; }
+    .table td.actions { justify-content: flex-end; padding-top: var(--s-3); }
+    .table td.actions::before { content: none; }
+}
 
 .seats { display: flex; align-items: center; gap: var(--s-3); font-family: var(--mono); font-size: 15px; white-space: nowrap; }
 .seats-bar { width: 72px; height: 6px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }

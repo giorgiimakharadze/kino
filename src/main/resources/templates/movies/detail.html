@@ -53,10 +53,10 @@
                     </thead>
                     <tbody>
                     <tr th:each="s : ${screenings}">
-                        <td class="num" th:text="${#temporals.format(s.startTime, 'dd MMM yyyy HH:mm')}">date</td>
-                        <td th:text="${s.hall}">Hall 1</td>
-                        <td class="num" th:text="${s.price}">10.00</td>
-                        <td>
+                        <td class="num" data-label="When" th:text="${#temporals.format(s.startTime, 'dd MMM yyyy HH:mm')}">date</td>
+                        <td data-label="Hall" th:text="${s.hall}">Hall 1</td>
+                        <td class="num" data-label="Price" th:text="${s.price}">10.00</td>
+                        <td data-label="Seats left">
                             <span class="seats">
                                 <span class="seats-bar"><i th:style="'width:' + ${freeSeats[s.id] * 100 / s.totalSeats} + '%'"></i></span>
                                 <span th:text="${freeSeats[s.id]} + ' / ' + ${s.totalSeats}">20 / 50</span>
