@@ -1,48 +1,78 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/layout :: head(${movie.title})}"></head>
 <body>
 <header th:replace="~{fragments/layout :: header}"></header>
-<main class="container">
-    <p class="notice" th:if="${message}" th:text="${message}"></p>
+<main id="top">
+    <section class="page-head">
+        <div class="wrap">
+            <p class="crumb"><a class="link" th:href="@{/movies}">&larr; All movies</a></p>
+            <p class="notice" th:if="${message}" th:text="${message}"></p>
 
-    <h1 th:text="${movie.title}">Title</h1>
-    <img th:if="${movie.posterPath}" th:src="${#strings.startsWith(movie.posterPath, 'http')} ? ${movie.posterPath} : @{/posters/{p}(p=${movie.posterPath})}"
-         th:alt="${movie.title}" style="max-width: 240px; border-radius: 8px;">
-    <p>
-        <span th:text="${movie.durationMinutes} + ' min'">120 min</span> &middot;
-        <span th:text="${movie.releaseDate}">2024-01-01</span> &middot;
-        <span th:each="g, st : ${movie.genres}" th:text="${g.name} + (${st.last} ? '' : ', ')">Genre</span>
-    </p>
-    <p th:text="${movie.description}">Description</p>
+            <div class="detail-grid">
+                <div class="media">
+                    <img th:if="${movie.posterPath}"
+                         th:src="${#strings.startsWith(movie.posterPath, 'http')} ? ${movie.posterPath} : @{/posters/{p}(p=${movie.posterPath})}"
+                         th:alt="${movie.title}">
+                    <div th:unless="${movie.posterPath}" class="no-poster">No poster</div>
+                </div>
 
-    <div>
-        <a class="btn" th:href="@{/movies/{id}/edit(id=${movie.id})}">Edit</a>
-        <!-- HTML forms only do POST, so _method=delete is turned into DELETE by Spring -->
-        <form style="display: inline" method="post" th:action="@{/movies/{id}(id=${movie.id}, _method='delete')}"
-              onsubmit="return confirm('Delete this movie?')">
-            <button type="submit" class="danger">Delete</button>
-        </form>
-    </div>
+                <div class="info">
+                    <h1 th:text="${movie.title}">Title</h1>
+                    <p class="meta" th:text="${movie.durationMinutes} + ' min · ' + ${movie.releaseDate?.year}">120 min · 2024</p>
+                    <ul class="chips" th:unless="${movie.genres.empty}">
+                        <li th:each="g : ${movie.genres}" th:text="${g.name}">Genre</li>
+                    </ul>
+                    <p class="lead measure" th:text="${movie.description}">Description</p>
 
-    <h2>Upcoming screenings</h2>
-    <p><a class="btn" th:href="@{/movies/{id}/screenings/new(id=${movie.id})}">Add screening</a></p>
-    <p th:if="${screenings.empty}">No upcoming screenings.</p>
-    <table th:unless="${screenings.empty}">
-        <tr><th>When</th><th>Hall</th><th>Price</th><th>Seats left</th><th></th></tr>
-        <tr th:each="s : ${screenings}">
-            <td th:text="${#temporals.format(s.startTime, 'dd MMM yyyy HH:mm')}">date</td>
-            <td th:text="${s.hall}">Hall 1</td>
-            <td th:text="${s.price}">10.00</td>
-            <td th:text="${freeSeats[s.id]} + ' / ' + ${s.totalSeats}">20 / 50</td>
-            <td>
-                <a class="btn" th:if="${freeSeats[s.id] > 0}" th:href="@{/screenings/{id}/book(id=${s.id})}">Book</a>
-                <span class="error" th:unless="${freeSeats[s.id] > 0}">Sold out</span>
-            </td>
-        </tr>
-    </table>
+                    <div class="btn-row">
+                        <a class="btn btn--secondary" th:href="@{/movies/{id}/edit(id=${movie.id})}">Edit</a>
+                        <!-- HTML forms only do POST, so _method=delete is turned into DELETE by Spring -->
+                        <form class="inline" method="post" th:action="@{/movies/{id}(id=${movie.id}, _method='delete')}"
+                              onsubmit="return confirm('Delete this movie?')">
+                            <button type="submit" class="btn--danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <p><a th:href="@{/movies}">&laquo; Back to movies</a></p>
+    <section class="section">
+        <div class="wrap">
+            <div class="section-head">
+                <h2>Upcoming screenings</h2>
+                <a class="btn btn--secondary" th:href="@{/movies/{id}/screenings/new(id=${movie.id})}">Add screening</a>
+            </div>
+
+            <p class="muted" th:if="${screenings.empty}">No upcoming screenings.</p>
+            <div class="table-wrap" th:unless="${screenings.empty}">
+                <table class="table">
+                    <thead>
+                    <tr><th>When</th><th>Hall</th><th>Price</th><th>Seats left</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="s : ${screenings}">
+                        <td class="num" th:text="${#temporals.format(s.startTime, 'dd MMM yyyy HH:mm')}">date</td>
+                        <td th:text="${s.hall}">Hall 1</td>
+                        <td class="num" th:text="${s.price}">10.00</td>
+                        <td>
+                            <span class="seats">
+                                <span class="seats-bar"><i th:style="'width:' + ${freeSeats[s.id] * 100 / s.totalSeats} + '%'"></i></span>
+                                <span th:text="${freeSeats[s.id]} + ' / ' + ${s.totalSeats}">20 / 50</span>
+                            </span>
+                        </td>
+                        <td class="actions">
+                            <a class="btn" th:if="${freeSeats[s.id] > 0}" th:href="@{/screenings/{id}/book(id=${s.id})}">Book</a>
+                            <span class="error" th:unless="${freeSeats[s.id] > 0}">Sold out</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
 </main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>

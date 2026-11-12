@@ -1,23 +1,38 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<!-- Shared <head> -->
+<!-- Shared <head>: use with th:replace="~{fragments/layout :: head('Page title')}" -->
 <head th:fragment="head(title)">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0d060b">
     <title th:text="${title} + ' | Kino'">Kino</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&amp;family=DM+Mono:wght@400;500&amp;display=swap">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
 <!-- Shared top bar -->
-<header th:fragment="header" class="site-header">
-    <a th:href="@{/movies}" class="logo">Kino</a>
-    <nav>
-        <a th:href="@{/movies}">Movies</a>
-        <a th:href="@{/bookings}">My bookings</a>
-        <a th:href="@{/movies/new}">Add movie</a>
-    </nav>
+<header th:fragment="header" class="nav">
+    <div class="wrap">
+        <a class="skip-link" href="#top">Skip to content</a>
+        <a th:href="@{/movies}" class="brand"><span class="mark">K</span><span>Kino</span></a>
+        <nav aria-label="Main">
+            <a class="nav-link nav-movies" th:href="@{/movies}">Movies</a>
+            <a class="nav-link" th:href="@{/bookings}">My bookings</a>
+            <a class="btn" th:href="@{/movies/new}">Add movie</a>
+        </nav>
+    </div>
 </header>
+
+<!-- Shared footer; the film data credit lives here, in one line -->
+<footer th:fragment="footer" class="site-footer">
+    <div class="wrap">
+        <span th:text="'Kino · ' + ${#temporals.year(#temporals.createNow())}">Kino · 2026</span>
+        <span>Film data: <a class="link" href="https://ghibliapi.vercel.app" rel="noopener">Studio Ghibli API</a></span>
+    </div>
+</footer>
 </body>
 </html>

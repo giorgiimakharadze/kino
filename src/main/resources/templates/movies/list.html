@@ -1,53 +1,67 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/layout :: head('Movies')}"></head>
 <body>
 <header th:replace="~{fragments/layout :: header}"></header>
-<main class="container">
-    <h1>Movies</h1>
-    <p class="notice" th:if="${message}" th:text="${message}"></p>
+<main id="top">
+    <section class="page-head">
+        <div class="wrap">
+            <h1>Now showing</h1>
+            <p class="lead">Pick a film, choose a screening and book your seats.</p>
+            <p class="notice" th:if="${message}" th:text="${message}"></p>
 
-    <!-- Search, filter and sort (plain GET so the URL can be shared) -->
-    <form class="inline-form" method="get" th:action="@{/movies}">
-        <input type="text" name="title" placeholder="Search title" th:value="${title}">
-        <select name="genre">
-            <option value="">All genres</option>
-            <option th:each="g : ${genres}" th:value="${g.name}" th:text="${g.name}"
-                    th:selected="${g.name == genre}"></option>
-        </select>
-        <select name="sort">
-            <option value="title" th:selected="${sort == 'title'}">Title</option>
-            <option value="releaseDate" th:selected="${sort == 'releaseDate'}">Release date</option>
-            <option value="durationMinutes" th:selected="${sort == 'durationMinutes'}">Duration</option>
-        </select>
-        <select name="dir">
-            <option value="asc" th:selected="${dir == 'asc'}">Ascending</option>
-            <option value="desc" th:selected="${dir == 'desc'}">Descending</option>
-        </select>
-        <button type="submit">Apply</button>
-    </form>
+            <!-- Search, filter and sort (plain GET so the URL can be shared) -->
+            <form class="filters" method="get" th:action="@{/movies}">
+                <input type="search" name="title" placeholder="Search by title" aria-label="Search by title" th:value="${title}">
+                <select name="genre" aria-label="Genre">
+                    <option value="">All genres</option>
+                    <option th:each="g : ${genres}" th:value="${g.name}" th:text="${g.name}"
+                            th:selected="${g.name == genre}"></option>
+                </select>
+                <select name="sort" aria-label="Sort by">
+                    <option value="title" th:selected="${sort == 'title'}">Title</option>
+                    <option value="releaseDate" th:selected="${sort == 'releaseDate'}">Release date</option>
+                    <option value="durationMinutes" th:selected="${sort == 'durationMinutes'}">Duration</option>
+                </select>
+                <select name="dir" aria-label="Order">
+                    <option value="asc" th:selected="${dir == 'asc'}">Ascending</option>
+                    <option value="desc" th:selected="${dir == 'desc'}">Descending</option>
+                </select>
+                <button type="submit">Apply</button>
+            </form>
+        </div>
+    </section>
 
-    <p th:if="${movies.empty}">No movies found.</p>
+    <section class="section">
+        <div class="wrap">
+            <p class="muted" th:if="${movies.empty}">No movies found.</p>
 
-    <div class="grid">
-        <a class="card" th:each="m : ${movies.content}" th:href="@{/movies/{id}(id=${m.id})}">
-            <img th:if="${m.posterPath}" th:src="${#strings.startsWith(m.posterPath, 'http')} ? ${m.posterPath} : @{/posters/{p}(p=${m.posterPath})}" th:alt="${m.title}">
-            <div th:unless="${m.posterPath}" class="no-poster">No poster</div>
-            <div class="body">
-                <strong th:text="${m.title}">Title</strong><br>
-                <small th:text="${m.durationMinutes} + ' min'">120 min</small>
+            <div class="cards">
+                <a class="card" th:each="m : ${movies.content}" th:href="@{/movies/{id}(id=${m.id})}">
+                    <div class="media">
+                        <img th:if="${m.posterPath}" loading="lazy"
+                             th:src="${#strings.startsWith(m.posterPath, 'http')} ? ${m.posterPath} : @{/posters/{p}(p=${m.posterPath})}"
+                             th:alt="${m.title}">
+                        <div th:unless="${m.posterPath}" class="no-poster">No poster</div>
+                    </div>
+                    <div class="body">
+                        <h3 th:text="${m.title}">Title</h3>
+                        <p class="meta" th:text="${m.durationMinutes} + ' min · ' + ${m.releaseDate?.year}">120 min · 2024</p>
+                    </div>
+                </a>
             </div>
-        </a>
-    </div>
 
-    <!-- Pagination: links keep the current filters and sorting -->
-    <div class="pagination" th:if="${movies.totalPages > 1}">
-        <a th:if="${movies.hasPrevious()}"
-           th:href="@{/movies(page=${movies.number - 1}, title=${title}, genre=${genre}, sort=${sort}, dir=${dir})}">&laquo; Prev</a>
-        <span class="current" th:text="'Page ' + ${movies.number + 1} + ' of ' + ${movies.totalPages}">Page 1 of 3</span>
-        <a th:if="${movies.hasNext()}"
-           th:href="@{/movies(page=${movies.number + 1}, title=${title}, genre=${genre}, sort=${sort}, dir=${dir})}">Next &raquo;</a>
-    </div>
+            <!-- Pagination: links keep the current filters and sorting -->
+            <nav class="pager" th:if="${movies.totalPages > 1}" aria-label="Pages">
+                <a class="btn btn--secondary" th:if="${movies.hasPrevious()}"
+                   th:href="@{/movies(page=${movies.number - 1}, title=${title}, genre=${genre}, sort=${sort}, dir=${dir})}">Previous</a>
+                <span class="pager-count" th:text="'Page ' + ${movies.number + 1} + ' of ' + ${movies.totalPages}">Page 1 of 3</span>
+                <a class="btn btn--secondary" th:if="${movies.hasNext()}"
+                   th:href="@{/movies(page=${movies.number + 1}, title=${title}, genre=${genre}, sort=${sort}, dir=${dir})}">Next</a>
+            </nav>
+        </div>
+    </section>
 </main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>

@@ -1,36 +1,53 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/layout :: head('My bookings')}"></head>
 <body>
 <header th:replace="~{fragments/layout :: header}"></header>
-<main class="container">
-    <h1>My bookings</h1>
-    <p class="notice" th:if="${message}" th:text="${message}"></p>
+<main id="top">
+    <section class="page-head">
+        <div class="wrap">
+            <h1>My bookings</h1>
+            <p class="lead">Enter the email you booked with to see your tickets.</p>
+            <p class="notice" th:if="${message}" th:text="${message}"></p>
 
-    <form class="inline-form" method="get" th:action="@{/bookings}">
-        <input type="email" name="email" placeholder="Your email" required th:value="${email}">
-        <button type="submit">Show bookings</button>
-    </form>
+            <form class="filters" style="grid-template-columns: minmax(0, 1fr) auto; max-width: 640px"
+                  method="get" th:action="@{/bookings}">
+                <input type="email" name="email" placeholder="you@example.com" aria-label="Your email" required th:value="${email}">
+                <button type="submit">Show bookings</button>
+            </form>
+        </div>
+    </section>
 
-    <!-- bookings is only set after an email was entered -->
-    <p th:if="${bookings != null and bookings.empty}">No bookings for this email.</p>
-    <table th:if="${bookings != null and !bookings.empty}">
-        <tr><th>Movie</th><th>When</th><th>Hall</th><th>Seats</th><th></th></tr>
-        <tr th:each="b : ${bookings}">
-            <td th:text="${b.screening.movie.title}">Title</td>
-            <td th:text="${#temporals.format(b.screening.startTime, 'dd MMM yyyy HH:mm')}">date</td>
-            <td th:text="${b.screening.hall}">Hall 1</td>
-            <td th:text="${b.seats}">2</td>
-            <td>
-                <!-- Cancelling needs the booking's email, sent as a hidden field -->
-                <form method="post" th:action="@{/bookings/{id}(id=${b.id}, _method='delete')}"
-                      onsubmit="return confirm('Cancel this booking?')">
-                    <input type="hidden" name="email" th:value="${email}">
-                    <button type="submit" class="danger">Cancel</button>
-                </form>
-            </td>
-        </tr>
-    </table>
+    <section class="section">
+        <div class="wrap">
+            <!-- bookings is only set after an email was entered -->
+            <p class="muted" th:if="${bookings != null and bookings.empty}">No bookings for this email.</p>
+            <div class="table-wrap" th:if="${bookings != null and !bookings.empty}">
+                <table class="table">
+                    <thead>
+                    <tr><th>Movie</th><th>When</th><th>Hall</th><th>Seats</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="b : ${bookings}">
+                        <td th:text="${b.screening.movie.title}">Title</td>
+                        <td class="num" th:text="${#temporals.format(b.screening.startTime, 'dd MMM yyyy HH:mm')}">date</td>
+                        <td th:text="${b.screening.hall}">Hall 1</td>
+                        <td class="num" th:text="${b.seats}">2</td>
+                        <td class="actions">
+                            <!-- Cancelling needs the booking's email, sent as a hidden field -->
+                            <form class="inline" method="post" th:action="@{/bookings/{id}(id=${b.id}, _method='delete')}"
+                                  onsubmit="return confirm('Cancel this booking?')">
+                                <input type="hidden" name="email" th:value="${email}">
+                                <button type="submit" class="btn--danger">Cancel booking</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
 </main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>

@@ -37,6 +37,7 @@ build/
 
 ### Uploaded posters ###
 uploads/
-
-### Claude Code ###
 .claude/
+skills-lock.json
+.agents
+.taste-skill/

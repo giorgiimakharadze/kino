@@ -32,7 +32,7 @@ import java.util.Set;
 @Controller
 public class MovieController {
 
-    private static final int PAGE_SIZE = 6;
+    private static final int PAGE_SIZE = 8;
     // Only these fields may be used for sorting (blocks ?sort=anything)
     private static final Set<String> SORT_FIELDS = Set.of("title", "releaseDate", "durationMinutes");
 
