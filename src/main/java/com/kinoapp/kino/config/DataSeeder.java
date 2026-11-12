@@ -9,6 +9,7 @@ import com.kinoapp.kino.repository.ScreeningRepository;
 import com.kinoapp.kino.service.MovieApiClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -71,7 +72,9 @@ public class DataSeeder {
             Sample.of("The Unreliable Witness", "A lawyer must trust the one person who always lies.", 115, LocalDate.of(2021, 3, 5), "Thriller"),
             Sample.of("Love and Lasagna", "A food critic falls for the chef she just gave a bad review.", 96, LocalDate.of(2025, 2, 14), "Romance", "Comedy"));
 
+    // Tests switch this off (app.seed=false) so they do not call the web API
     @Bean
+    @ConditionalOnProperty(name = "app.seed", havingValue = "true", matchIfMissing = true)
     CommandLineRunner seed(GenreRepository genreRepository, MovieRepository movieRepository,
                            ScreeningRepository screeningRepository, MovieApiClient apiClient) {
         return args -> {
@@ -100,7 +103,7 @@ public class DataSeeder {
                 // Two future screenings per movie; hall/time differ per movie so none clash
                 LocalDate firstDay = LocalDate.now().plusDays(1 + i / 5);
                 int hour = 12 + 2 * (i % 5);
-                BigDecimal price = BigDecimal.valueOf(8 + (i % 3) * 1.5);
+                BigDecimal price = BigDecimal.valueOf(8 + (i % 3) * 1.5).setScale(2);
                 int seats = 40 + 10 * (i % 4);
                 screeningRepository.save(screening(movie, "Hall 1", firstDay.atTime(hour, 0), seats, price));
                 screeningRepository.save(screening(movie, "Hall 2", firstDay.plusDays(2).atTime(hour, 0), seats, price));

@@ -38,10 +38,6 @@
             <td>
                 <a class="btn" th:if="${freeSeats[s.id] > 0}" th:href="@{/screenings/{id}/book(id=${s.id})}">Book</a>
                 <span class="error" th:unless="${freeSeats[s.id] > 0}">Sold out</span>
-                <form style="display: inline" method="post" th:action="@{/screenings/{id}(id=${s.id}, _method='delete')}"
-                      onsubmit="return confirm('Delete this screening?')">
-                    <button type="submit" class="danger">Delete</button>
-                </form>
             </td>
         </tr>
     </table>

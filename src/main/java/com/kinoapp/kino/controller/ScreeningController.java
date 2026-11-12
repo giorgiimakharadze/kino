@@ -1,14 +1,12 @@
 package com.kinoapp.kino.controller;
 
 import com.kinoapp.kino.dto.ScreeningForm;
-import com.kinoapp.kino.entity.Screening;
 import com.kinoapp.kino.service.MovieService;
 import com.kinoapp.kino.service.ScreeningService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +36,10 @@ public class ScreeningController {
     @PostMapping("/screenings")
     public String create(@Valid @ModelAttribute("screeningForm") ScreeningForm form, BindingResult result,
                          Model model, RedirectAttributes redirect) {
+        // Without a movie there is nothing to show on the form (only a hand-made request does this)
+        if (result.hasFieldErrors("movieId")) {
+            return "redirect:/movies";
+        }
         if (!result.hasErrors()) {
             try {
                 screeningService.create(form);
@@ -50,15 +52,5 @@ public class ScreeningController {
         }
         model.addAttribute("movie", movieService.get(form.getMovieId()));
         return "screenings/form";
-    }
-
-    // The delete button posts to /screenings/{id}?_method=delete
-    @DeleteMapping("/screenings/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirect) {
-        Screening screening = screeningService.get(id);
-        Long movieId = screening.getMovie().getId();
-        screeningService.delete(id);
-        redirect.addFlashAttribute("message", "Screening deleted");
-        return "redirect:/movies/" + movieId;
     }
 }

@@ -15,9 +15,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("select coalesce(sum(b.seats), 0) from Booking b where b.screening.id = :screeningId")
     int countBookedSeats(@Param("screeningId") Long screeningId);
 
-    // Used to block deleting a screening or movie that has bookings
-    boolean existsByScreening_Id(Long screeningId);
-
+    // Used to block deleting a movie that has bookings
     boolean existsByScreening_Movie_Id(Long movieId);
 
     // Look up a customer's bookings by email

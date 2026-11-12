@@ -2,7 +2,6 @@ package com.kinoapp.kino.service;
 
 import com.kinoapp.kino.dto.ScreeningForm;
 import com.kinoapp.kino.entity.Screening;
-import com.kinoapp.kino.repository.BookingRepository;
 import com.kinoapp.kino.repository.ScreeningRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,13 +15,10 @@ import java.util.List;
 public class ScreeningService {
 
     private final ScreeningRepository screeningRepository;
-    private final BookingRepository bookingRepository;
     private final MovieService movieService;
 
-    public ScreeningService(ScreeningRepository screeningRepository, BookingRepository bookingRepository,
-                            MovieService movieService) {
+    public ScreeningService(ScreeningRepository screeningRepository, MovieService movieService) {
         this.screeningRepository = screeningRepository;
-        this.bookingRepository = bookingRepository;
         this.movieService = movieService;
     }
 
@@ -50,14 +46,5 @@ public class ScreeningService {
         s.setTotalSeats(form.getTotalSeats());
         s.setPrice(form.getPrice());
         return screeningRepository.save(s);
-    }
-
-    @Transactional
-    public void delete(Long id) {
-        Screening s = get(id);
-        if (bookingRepository.existsByScreening_Id(id)) {
-            throw new IllegalStateException("Cannot delete a screening that has bookings");
-        }
-        screeningRepository.delete(s);
     }
 }
