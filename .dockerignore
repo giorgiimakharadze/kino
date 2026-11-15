@@ -1,0 +1,10 @@
+target/
+.git/
+.idea/
+.claude/
+.agents/
+.taste-skill/
+skills-lock.json
+data/
+uploads/
+HELP.md

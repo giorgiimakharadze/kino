@@ -1,0 +1,12 @@
+services:
+  kino:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - kino-data:/app/data         # the H2 database file
+      - kino-uploads:/app/uploads   # uploaded posters
+
+volumes:
+  kino-data:
+  kino-uploads:

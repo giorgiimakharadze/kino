@@ -22,6 +22,27 @@ so everything you add is gone after a restart.
 
 **H2 console:** <http://localhost:8080/h2-console> with JDBC URL `jdbc:h2:mem:kinodb`, user `sa`, empty password.
 
+## Run it with Docker (data is kept)
+
+Needs Docker with Compose. From the project folder:
+
+```
+docker compose up --build
+```
+
+Then open <http://localhost:8080>. In Docker the app keeps its data in files on two volumes,
+`kino-data` (the H2 database) and `kino-uploads` (uploaded posters), so movies, screenings,
+bookings and posters stay after a restart.
+
+- `docker compose down` stops the app and keeps the data; `docker compose up` brings it back.
+- `docker compose down -v` stops the app and deletes the data, so the next start loads the sample data again.
+- Sample data is only loaded when the database is empty. If the first start had no internet, the 10 built-in
+  movies are stored; run `docker compose down -v` to load the real films.
+- Only one container can use the database at a time.
+- Running with `./mvnw spring-boot:run` (above) is unchanged and still starts with an empty in-memory database.
+- The container's clock is UTC, so "start time must be in the future" is checked against UTC.
+  Add `TZ: <your time zone>` under `environment:` in `docker-compose.yml` if that matters to you.
+
 ## What you can do
 
 - Browse movies with search, genre filter, sorting (title, release date, duration) and pagination (8 per page).
